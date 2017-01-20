@@ -1,0 +1,67 @@
+
+
+####################################################################################################
+
+# Automated Email Server
+
+# Using YAML's "yes" and "no" keywords for booleans would be preferred because
+# it sounds more natural, however, the JS-YAML module for Node.js does not
+# support these keywords unless they are cast as boolean, which looks clumsy.
+# Therefore we are using JS-YAML's keywords of "true" (yes) and "false" (no).
+
+####################################################################################################
+
+# The host address for this server.
+# email_server_host: string
+email_server_host: "127.0.0.1"
+
+#···································································································
+
+# The port for this server.
+# email_server_port: integer
+email_server_port: 10000
+
+#···································································································
+
+# The host address for the database.
+# database_host: string
+database_host: "127.0.0.1"
+
+#···································································································
+
+# The port for the database.
+# database_port: integer
+database_port: 3306
+
+#···································································································
+
+# The username for the database.
+# database_username: string
+database_username: "automated_email_server"
+
+#···································································································
+
+# The password for the database.
+# database_password: string
+database_password: "xVdU9cMpcYKBnFTLRiPEKBk4xFCNf5j20rxELMXAEuFIHUpXezGgFXB3wSCHT4Dr"
+
+#···································································································
+
+# The database schema to select.
+# database_schema: string
+database_schema: "db_automated_email"
+
+#···································································································
+
+# The API KEY to connect to SendGrid's API service.
+# sendgrid_api_key: string
+sendgrid_api_key: "SG.bv798nc2n8qa7bloa78veba874lvab78wl5v8bl874"
+
+#···································································································
+
+# The address that emails will appear to be sent from.
+# from_address: string
+from_address: "automation@example.com"
+
+####################################################################################################
+

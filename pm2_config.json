@@ -1,0 +1,25 @@
+{
+"apps":
+  [
+  {
+  "name": "Automated-Email-Server",
+  "script": "./main.js",
+  "exec_mode": "fork_mode",
+  "max_memory_restart": "200M",
+  "watch": true,
+  "env": {},
+  "env_production":
+    {
+    "NODE_ENV": "production"
+    },
+  "log_date_format": "x - YYYY-MM-DD HH:mm:ss.SSS Z",
+  "out_file": "/home/automated_email_server/logs/output_log",
+  "error_file": "/home/automated_email_server/logs/error_log"
+  }
+  ],
+"deploy":
+  {
+  "staging": {},
+  "production": {}
+  }
+}

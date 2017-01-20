@@ -1,0 +1,33 @@
+
+
+<style>
+.button_link
+	{
+	background-color:				#8080c0;
+	padding:						0.5em 1em;
+	color:							#ffffff;
+	}
+
+.email_footer
+	{
+	margin-top:						2em;
+	border-top:						0.1em dotted #808080;
+	padding-top:					1em;
+	}
+</style>
+
+<p>Hi {{first_name}},</p>
+
+<p>Thank you for signing up to use our web app!</p>
+
+<p>Your username is {{username}}.</p>
+
+<p>Please click the button below to verify your email address.</p>
+
+<p class="button_link"><a href="{{verify_link}}">Verify email</a></p>
+
+<div class="email_footer">
+<p>Please do not reply to this email from &lt;automation@example.com&gt;, this email is not monitored.</p>
+<p>If you need assistance then please visit <a href="https://help.example.com">https://help.example.com</a>.</p>
+</div>
+

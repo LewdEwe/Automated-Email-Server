@@ -1,0 +1,26 @@
+{
+  "name": "@lewdewe/automated-email-server",
+  "version": "1.0.0",
+  "description": "This is a server which services TCP requests to generate transactional emails using Handlebars templates and to send them using the SendGrid service.",
+  "keywords": ["sendgrid", "transactional", "email", "server", "templates"],
+  "author": "Erik Wallace <open-source@lewdewe.com> (http://lewdewe.com)",
+  "repository": "github:LewdEwe/Automated-Email-Server.git",
+  "bugs": {
+  "url": "https://github.com/LewdEwe/Automated-Email-Server/issues",
+  "email": "open-source@lewdewe.com"
+  },
+  "license": "MIT",
+  "private": false,
+  "engines": {"node": ""},
+  "main": "./main.js",
+  "bin": null,
+  "scripts": null,
+  "dependencies": {
+	  "flow": "^0.2.3",
+      "handlebars": "^4.0.5",
+      "js-yaml": "^3.6.1",
+      "mariasql": "^0.2.6",
+      "sendgrid": "^4.5.0"
+  },
+  "devDependencies": {}
+}
