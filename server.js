@@ -395,11 +395,11 @@ function send_email(remote_address, request, callback)
 	let mail = new sendgrid.mail.Mail(sender_address, data.subject, recipient_address, content);
 
 	// Include our own email ID for crossreferencing.
-	if(typeof data.request_id === 'string')
+	if(typeof request.request_id === 'string')
 		{
-		mail.addHeader(new sendgrid.mail.Header('X-AUTOMATED-EMAIL-ID', data.request_id));
+		mail.addHeader(new sendgrid.mail.Header('X-AUTOMATED-EMAIL-ID', request.request_id));
 		}
-	else data.request_id = null;
+	else request.request_id = null;
 
 	// These headers were recommended for stopping out-of-office replies.
 	mail.addHeader(new sendgrid.mail.Header('Return-Path', '<>'));
@@ -416,7 +416,7 @@ function send_email(remote_address, request, callback)
 		console.debug(response.headers);
 */
 
-		log_email(remote_address, data.request_id, response.headers['x-message-id'], data.recipient_address, data.subject, data.template_name, JSON.stringify(data.template_data), body);
+		log_email(remote_address, request.request_id, response.headers['x-message-id'], data.recipient_address, data.subject, data.template_name, JSON.stringify(data.template_data), body);
 
 		callback({sendgrid_id: response.headers['x-message-id']});
 		}

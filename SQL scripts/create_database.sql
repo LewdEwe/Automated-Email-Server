@@ -19,7 +19,7 @@ USE db_automated_email;
 CREATE TABLE sent_emails_log (
 	log_time				 	TIMESTAMP(6) NOT NULL,
 	requester				 	CHAR(50) NOT NULL,
-	request_id				 	CHAR(50) NOT NULL,
+	request_id				 	CHAR(50),
 	sendgrid_id				 	CHAR(50) NOT NULL,
 	recipient_address		 	CHAR(100) NOT NULL,
 	subject					 	CHAR(200) NOT NULL,
