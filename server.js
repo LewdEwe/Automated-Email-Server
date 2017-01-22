@@ -488,9 +488,9 @@ function YI9B7kFzmr(error, files)
 		{
 		let filename = files[i];
 		let content = fs.readFileSync(path.join(BASE_FOLDER, 'templates', filename), {encoding: 'utf8'});
-		let i = filename.lastIndexOf('.');
-		if(i === -1)i = filename.length;
-		templates[filename.substr(0, i)] = handlebars.compile(content);
+		let index = filename.lastIndexOf('.');
+		if(index === -1)index = filename.length;
+		templates[filename.substr(0, index)] = handlebars.compile(content);
 		}
 
 	// Connect to the database if required.
