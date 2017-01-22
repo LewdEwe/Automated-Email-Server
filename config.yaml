@@ -23,6 +23,26 @@ email_server_port: 10000
 
 #···································································································
 
+# Whether to log all sent emails to the database.
+# If this is set to false then all other loggin and database settings will be ignored.
+# logging_enabled: boolean
+logging_enabled: true
+
+#···································································································
+
+# Whether to log the template data sent with each request.
+# log_template_data: boolean
+log_template_data: true
+
+#···································································································
+
+# Whether to log the actual body of the sent emails.
+# If using templates then this will log the completed body after template substitutions.
+# log_email_body: boolean
+log_email_body: false
+
+#···································································································
+
 # The host address for the database.
 # database_host: string
 database_host: "127.0.0.1"
@@ -43,7 +63,7 @@ database_username: "automated_email_server"
 
 # The password for the database.
 # database_password: string
-database_password: "xVdU9cMpcYKBnFTLRiPEKBk4xFCNf5j20rxELMXAEuFIHUpXezGgFXB3wSCHT4Dr"
+database_password: "74RfcJhonFgPBF2udJbTvw3ue"
 
 #···································································································
 

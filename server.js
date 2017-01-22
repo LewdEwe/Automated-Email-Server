@@ -166,9 +166,12 @@ Log details of a sent email to the database.
 @subject				String: the email's subject line.
 @template_name			String: the name of the template used for the body of the email.
 @template_data			Object or null: an object containing the substitution values for the template.
+@body					String: the email's body.
 */
-function log_email(requester, request_id, sendgrid_id, recipient_address, subject, template_name, template_data)
+function log_email(requester, request_id, sendgrid_id, recipient_address, subject, template_name, template_data, body)
 	{
+	let data_value = (config.log_template_data === true) ? template_data : null;
+	let body_value = (config.log_email_body === true) ? body : null;
 	let parameters =	[
 						requester,
 						request_id,
@@ -176,10 +179,11 @@ function log_email(requester, request_id, sendgrid_id, recipient_address, subjec
 						recipient_address,
 						subject,
 						template_name,
-						template_data
+						data_value,
+						body_value
 						];
 
-	database_connection.query('CALL log_email(?, ?, ?, ?, ?, ?, ?)', parameters)
+	database_connection.query('CALL log_email(?, ?, ?, ?, ?, ?, ?, ?)', parameters)
 	.on('result', function i7WUmmbdm(result)
 		{
 		result
@@ -331,7 +335,7 @@ function tcp_message_handler(socket, json_message)
 		{
 		if(socket.destroyed === false)
 			{
-			socket.write(JSON.stringify({request_id: request.request_id, data: response_data}));
+			socket.write(JSON.stringify({request_id: request.request_id, data: response_data}) + '\n');
 			}
 		}
 	);
@@ -345,32 +349,64 @@ Send the requested email.
 @request				Object: the object containing the request details.
 @callback				Function: callback function to indicate completion.
 
-Mandatory callback receives null or the SendGrid email ID.
+Mandatory callback receives null or an object containing the SendGrid email ID.
 */
 function send_email(remote_address, request, callback)
 	{
-	// Determine the content of the email.
-	let content;
-	if(typeof request.template_name === 'string')
-		{
-		if(templates[request.template_name] === undefined)
-			{
-			console.error('The template named "' + request.template_name + '" was not among the loaded templates.');
-			callback(null);
-			return;
-			}
+	let data = request.data;
 
-		content = new sendgrid.mail.Content('text/html', templates[request.template_name](request.template_data));
+	// Validate request data.
+	if(typeof data !== 'object' || data === null)
+		{
+		console.error('Request data invalid.');
+		return callback(null);
 		}
-	else content = new sendgrid.mail.Content('text/html', request.content);
+	if(typeof data.recipient_address !== 'string' || data.recipient_address.length < 3 || data.recipient_address.indexOf('@') === -1)
+		{
+		console.error('Recipient email address invalid.');
+		return callback(null);
+		}
+	if(typeof data.subject !== 'string' || data.subject.length === 0)
+		{
+		console.error('Subject text invalid.');
+		return callback(null);
+		}
+	if(typeof data.template_name === 'string' && (data.template_name.length === 0 || templates[data.template_name] === undefined))
+		{
+		console.error('Template name invalid.');
+		return callback(null);
+		}
+	if(typeof data.template_name !== 'string' && typeof data.body !== 'string')
+		{
+		console.error('Neither template nor body was specified.');
+		return callback(null);
+		}
+
+	// Determine the body text of the email.
+	let body;
+	if(typeof data.template_name === 'string')
+		{
+		body = templates[data.template_name](data.template_data);
+		}
+	else body = data.body;
+
+	// Create the content object.
+	// If a DOCTYPE tag is detected then we force the MIME type to HTML.
+	let type = data.type || 'plain';
+	if(body.indexOf('<!DOCTYPE') !== -1)type= 'html';
+	let content = new sendgrid.mail.Content('text/' + type, body);
 
 	// Create the email object.
 	let sender_address = new sendgrid.mail.Email(config.from_address);
-	let recipient_address = new sendgrid.mail.Email(request.recipient_address);
-	let mail = new sendgrid.mail.Mail(sender_address, request.subject, recipient_address, content);
+	let recipient_address = new sendgrid.mail.Email(data.recipient_address);
+	let mail = new sendgrid.mail.Mail(sender_address, data.subject, recipient_address, content);
 
 	// Include our own email ID for crossreferencing.
-	mail.addHeader(new sendgrid.mail.Header('X-AUTOMATED-EMAIL-ID', request.request_id));
+	if(typeof data.request_id === 'string')
+		{
+		mail.addHeader(new sendgrid.mail.Header('X-AUTOMATED-EMAIL-ID', data.request_id));
+		}
+	else data.request_id = null;
 
 	// These headers were recommended for stopping out-of-office replies.
 	mail.addHeader(new sendgrid.mail.Header('Return-Path', '<>'));
@@ -387,14 +423,9 @@ function send_email(remote_address, request, callback)
 		console.debug(response.headers);
 */
 
-		log_email(remote_address, request.request_id, response.headers['x-message-id'], request.recipient_address, request.subject, request.template_name, JSON.stringify(request.template_data));
+		log_email(remote_address, data.request_id, response.headers['x-message-id'], data.recipient_address, data.subject, data.template_name, JSON.stringify(data.template_data), body);
 
-		callback(
-			{
-			request_id:		request.request_id,
-			sendgrid_id:	response.headers['x-message-id']
-			}
-		);
+		callback({sendgrid_id: response.headers['x-message-id']});
 		}
 	);
 	}
@@ -464,11 +495,17 @@ function YI9B7kFzmr(error, files)
 		{
 		let filename = files[i];
 		let content = fs.readFileSync(path.join(BASE_FOLDER, 'templates', filename), {encoding: 'utf8'});
-		templates[filename.substr(0, filename.indexOf('.'))] = handlebars.compile(content);
+		let i = filename.lastIndexOf('.');
+		if(i === -1)i = filename.length;
+		templates[filename.substr(0, i)] = handlebars.compile(content);
 		}
 
-	// Connect to the database.
-	connect_database(this);
+	// Connect to the database if required.
+	if(config.logging_enabled === true)
+		{
+		connect_database(this);
+		}
+	else this();
 	},
 function uUOsmx5cgT()
 	{
