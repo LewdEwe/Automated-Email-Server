@@ -94,13 +94,6 @@ Create a connection to the database.
 */
 function connect_database(callback)
 	{
-	// If database logging is disabled then do nothing.
-	if(config.database_host === null)
-		{
-		console.info('Database logging is disabled.');
-		if(typeof callback === 'function')callback();
-		}
-
 	// Create a database client instance and setup event handlers.
 	console.info('Connecting to MariaDB database on ' + config.database_host + ':' + config.database_port + '.');
 	if(database_connection === null)
@@ -505,7 +498,11 @@ function YI9B7kFzmr(error, files)
 		{
 		connect_database(this);
 		}
-	else this();
+	else
+		{
+		console.info('Database logging is disabled.');
+		this();
+		}
 	},
 function uUOsmx5cgT()
 	{
