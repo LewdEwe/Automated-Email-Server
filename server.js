@@ -182,8 +182,10 @@ function log_email(requester, request_id, sendgrid_id, recipient_address, subjec
 		result
 		.on('end', function Zdv0DjFDpt(info)
 			{
-var inspect = require('util').inspect;
-console.log(inspect(info));
+/*
+			var inspect = require('util').inspect;
+			console.debug(inspect(info));
+*/
 			}
 		)
 		.on('error', function PMR4RNaXAA(error)
@@ -348,30 +350,22 @@ function send_email(remote_address, request, callback)
 	{
 	let data = request.data;
 
-	// Validate request data.
+	// Check we have a data object in the request.
 	if(typeof data !== 'object' || data === null)
 		{
 		console.error('Request data invalid.');
 		return callback(null);
 		}
-	if(typeof data.recipient_address !== 'string' || data.recipient_address.length < 3 || data.recipient_address.indexOf('@') === -1)
+
+	// Check that we have the data necessary to create the email body content.
+	if(typeof data.template_name !== 'string' && typeof data.body !== 'string')
 		{
-		console.error('Recipient email address invalid.');
-		return callback(null);
-		}
-	if(typeof data.subject !== 'string' || data.subject.length === 0)
-		{
-		console.error('Subject text invalid.');
+		console.error('Neither template nor body was specified.');
 		return callback(null);
 		}
 	if(typeof data.template_name === 'string' && (data.template_name.length === 0 || templates[data.template_name] === undefined))
 		{
 		console.error('Template name invalid.');
-		return callback(null);
-		}
-	if(typeof data.template_name !== 'string' && typeof data.body !== 'string')
-		{
-		console.error('Neither template nor body was specified.');
 		return callback(null);
 		}
 
@@ -388,6 +382,27 @@ function send_email(remote_address, request, callback)
 	let type = data.type || 'plain';
 	if(body.indexOf('<!DOCTYPE') !== -1)type= 'html';
 	let content = new sendgrid.mail.Content('text/' + type, body);
+
+	// If appropriate use the HTML title as the subject line.
+	if(type === 'html' && config.html_title_overrides_subject === true)
+		{
+		let result = body.match(/<title>([^<]+)<\/title>/i);
+		if(result !== null && result.length > 1)data.subject = result[1];
+		}
+
+	// Check that we now have a subject.
+	if(typeof data.subject !== 'string' || data.subject.length === 0)
+		{
+		console.error('Subject not specified.');
+		return callback(null);
+		}
+
+	// Check we have a valid recipient address.
+	if(typeof data.recipient_address !== 'string' || data.recipient_address.length < 3 || data.recipient_address.indexOf('@') === -1)
+		{
+		console.error('Recipient email address invalid.');
+		return callback(null);
+		}
 
 	// Create the email object.
 	let sender_address = new sendgrid.mail.Email(config.from_address);

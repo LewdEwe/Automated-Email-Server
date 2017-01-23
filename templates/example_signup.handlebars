@@ -3,17 +3,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>This is an example HTML title</title>
 <style>
-.button_link,
-.button_link:hover,
-.button_link:active,
-.button_link:visited,
+.verify_link
 	{
-	background-color:				#8080c0;
-	padding:						0.5em 1em;
-	font-weight:					bold;
-	color:							#ffffff;
-	text-decoration:				none;
+	display:						inline-block;
+	background-color:				#c0c0c0;
+	padding:						1em 2em;
 	}
 
 .email_footer
@@ -34,7 +30,7 @@
 
 <p>Please click the button below to verify your email address.</p>
 
-<p><a class="button_link" href="{{verify_link}}">Verify email</a></p>
+<p class="verify_link"><a href="{{verify_link}}">Verify email</a></p>
 
 <div class="email_footer">
 <p>Please do not reply to this email from &lt;automation@example.com&gt;, this email is not monitored.</p>

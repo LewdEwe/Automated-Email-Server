@@ -83,5 +83,12 @@ sendgrid_api_key: "SG.bv798nc2n8qa7bloa78veba874lvab78wl5v8bl874"
 # from_address: string
 from_address: "automation@example.com"
 
+#···································································································
+
+# If true and the email contains a non-empty HTML title tag
+# then the title text will become the email subject line.
+# html_title_overrides_subject: boolean
+html_title_overrides_subject: true
+
 ####################################################################################################
 
