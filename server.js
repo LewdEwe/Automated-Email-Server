@@ -265,12 +265,12 @@ function tcp_message_handler(socket, json_message)
 	// Protect against request without an action value.
 	if(typeof request.action !== 'string' || request.action.length === 0)request.action = 'undefined';
 
+	// Get the remote address for the stats.
+	let remote_address = socket.remoteAddress + ":" + socket.remotePort;
+
+	// Update the request stats.
 	if(config.stats_enabled === true)
 		{
-		// Get the remote address for the stats.
-		let remote_address = socket.remoteAddress + ":" + socket.remotePort;
-
-		// Update the request stats.
 		let current_time = Date.now();
 		if(per_minute_stats === null || (current_time - last_stats_time) >= 60000)
 			{
