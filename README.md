@@ -1,7 +1,7 @@
 
 # Automated Email Server
 
-(Dependencies)[#dependencies]
+[Dependencies](#dependencies)
 
 ## Overview
 
@@ -141,13 +141,13 @@ To send an email use the `send_email` command. The requests parameters are as fo
 ```html
 {
 "request_id":			<string, optional>,
-"action":			"send_email",
+"action":				"send_email",
 "data":
 	{
-	"recipient_address":		<string, required>,
-	"subject":			<string, optional>,
-	"type":				<string, optional>,
-	"body":				<string, optional>,
+	"recipient_address":	<string, required>,
+	"subject":				<string, optional>,
+	"type":					<string, optional>,
+	"body":					<string, optional>,
 	"template_name":		<string, optional>,
 	"template_data":		<object, optional>,
 	}
@@ -219,7 +219,7 @@ Or formatted for clarity:
 	"server_start_time":				1485384402848,
 	"total_stats":
 		{
-		"total_requests":			2,
+		"total_requests":				2,
 		"requests_by_address":
 			{
 			"192.168.8.100:34779":		2
@@ -238,7 +238,7 @@ Or formatted for clarity:
 		},
 	"per_minute_stats":
 		{
-		"total_requests":			1,
+		"total_requests":				1,
 		"requests_by_address":
 			{
 			"192.168.8.100:34779":		1
