@@ -265,41 +265,44 @@ function tcp_message_handler(socket, json_message)
 	// Protect against request without an action value.
 	if(typeof request.action !== 'string' || request.action.length === 0)request.action = 'undefined';
 
-	// Get the remote address for the stats.
-	let remote_address = socket.remoteAddress + ":" + socket.remotePort;
-
-	// Update the request stats.
-	let current_time = Date.now();
-	if(per_minute_stats === null || (current_time - last_stats_time) >= 60000)
+	if(config.stats_enabled === true)
 		{
-		last_per_minute_stats = per_minute_stats;
-		per_minute_stats = 	{
-							total_requests:					1,
-							requests_by_address:			{[remote_address]: 1},
-							requests_by_type:				{[request.action]: {[remote_address]: 1}}
-							};
-		last_stats_time = current_time;
-		}
+		// Get the remote address for the stats.
+		let remote_address = socket.remoteAddress + ":" + socket.remotePort;
 
-	total_stats.total_requests++;
-
-	if(total_stats.requests_by_address[remote_address] === undefined)
-		{
-		total_stats.requests_by_address[remote_address] = 1;
-		}
-	else total_stats.requests_by_address[remote_address]++;
-
-	if(total_stats.requests_by_type[request.action] === undefined)
-		{
-		total_stats.requests_by_type[request.action] = {[remote_address]: 1};
-		}
-	else
-		{
-		if(total_stats.requests_by_type[request.action][remote_address] === undefined)
+		// Update the request stats.
+		let current_time = Date.now();
+		if(per_minute_stats === null || (current_time - last_stats_time) >= 60000)
 			{
-			total_stats.requests_by_type[request.action][remote_address] = 1;
+			last_per_minute_stats = per_minute_stats;
+			per_minute_stats = 	{
+								total_requests:					1,
+								requests_by_address:			{[remote_address]: 1},
+								requests_by_type:				{[request.action]: {[remote_address]: 1}}
+								};
+			last_stats_time = current_time;
 			}
-		else total_stats.requests_by_type[request.action][remote_address]++;
+
+		total_stats.total_requests++;
+
+		if(total_stats.requests_by_address[remote_address] === undefined)
+			{
+			total_stats.requests_by_address[remote_address] = 1;
+			}
+		else total_stats.requests_by_address[remote_address]++;
+
+		if(total_stats.requests_by_type[request.action] === undefined)
+			{
+			total_stats.requests_by_type[request.action] = {[remote_address]: 1};
+			}
+		else
+			{
+			if(total_stats.requests_by_type[request.action][remote_address] === undefined)
+				{
+				total_stats.requests_by_type[request.action][remote_address] = 1;
+				}
+			else total_stats.requests_by_type[request.action][remote_address]++;
+			}
 		}
 
 	// Process the request.
@@ -529,6 +532,10 @@ function uUOsmx5cgT()
 
 	// Start listening for connections.
 	server.listen(config.email_server_port, config.email_server_host);
+
+	// Initialise statistics data.
+	server_start_time = Date.now();
+	last_stats_time = server_start_time;
 	}
 );
 

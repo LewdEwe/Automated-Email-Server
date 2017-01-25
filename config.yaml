@@ -90,5 +90,11 @@ from_address: "automation@example.com"
 # html_title_overrides_subject: boolean
 html_title_overrides_subject: true
 
+#···································································································
+
+# Whether to provide statistics on the number of requests received.
+# stats_enabled: boolean
+stats_enabled: true
+
 ####################################################################################################
 
